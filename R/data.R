@@ -1,0 +1,32 @@
+.survey_counts <- function() {
+  data.frame(
+    site = paste0("S", 1:20),
+    habitat = c(
+      rep(c("forest", "scrub", "wetland"), each = 4),
+      "forest", "wetland", "forest", "forest", "scrub", "scrub",
+      "wetland", "wetland"
+    ),
+    count = c(
+      12, 15, 11, 14, 6, 9, 7, 8, 18, 21,
+      17, 20, NA, NA, 13, 9, 10, 5, 19, 22
+    ),
+    distance_m = c(
+      15, 40, 70, 95, 20, 55, 80, 110, 10, 35,
+      65, 120, 45, 85, 105, 130, 125, 140, 75, 88
+    ),
+    detected = c(
+      TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE,
+      TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE
+    ),
+    stringsAsFactors = FALSE
+  )
+}
+
+.tutorial_data <- function() {
+  data.frame(
+    ID = 1:25,
+    x1 = c(3, 2, 4, 5, 2, 3, 4, 5, 2, 3, 42, 43, 2, 43, 6, 4, 3, 234, 34, 4, 243, 24, 2, 2, 2),
+    x2 = c(2.1, -5.6, 13.3, -21, -28.7, 36.4, -44.1, 51.8, -5.6, -13.3, -21, -44.1, 51.8, 147.7, 2.1, -5.6, 13.3, -63.35, 0, -145.53, 23, -13, -268.8, 4, -350.98),
+    x3 = c(0.7, -2.8, 3.325, -4.2, -14.35, 5.9, -11.025, -2.1, -2.8, 5.7, -0.5, -1.025581395, 25.9, 3.434883721, 4, -1.4, 4.433333333, -0.270726496, 3, -36.3825, 0.094650206, 0.4, -134.4, 2, -175.49)
+  )
+}

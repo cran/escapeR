@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Getting started with escapeR</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting started with escapeR</h1>
+
+
+
+<p><code>escapeR</code> is a small escape-room game for learning R
+through ecological statistics. Each room gives you a thread of the whole
+story, a task, and a lock. You solve the task with ordinary R commands,
+then submit the answer to move to the next room.</p>
+<p>The bundled quest starts with R foundations and moves through data
+import, visualisation, data manipulation, simple ecological modelling,
+distance-sampling ideas, and reproducible workflows.</p>
+<div id="start-your-first-quest" class="section level2">
+<h2>Start your first quest</h2>
+<p>To start playing you simply need to load the package and call
+<code>escape()</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(escapeR)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">escape</span>()</span></code></pre></div>
+<p>In an interactive R session, <code>escape()</code> asks for your
+player name. Use a short name you can remember, because
+<code>escapeR</code> saves your progress under that name.</p>
+<p>You can also provide your player name directly:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">escape</span>(<span class="at">player =</span> <span class="st">&quot;ana&quot;</span>)</span></code></pre></div>
+<p>The first room is then printed in the console. It includes:</p>
+<ul>
+<li>the room number and title;</li>
+<li>a short introduction;</li>
+<li>the task you need to solve;</li>
+<li>the learning goal for that room.</li>
+</ul>
+<p>The task is solved outside the game prompt. Use R as you normally
+would: create objects, inspect data, calculate values, make plots, or
+fit models. When you think you have the answer, submit it.</p>
+</div>
+<div id="submit-an-answer" class="section level2">
+<h2>Submit an answer</h2>
+<p>Use <code>submit()</code> with the answer that should open the
+current lock:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">submit</span>(<span class="dv">70</span>)</span></code></pre></div>
+<p>If the answer is correct, <code>escapeR</code> shows the success
+message and moves you to the next room. If the answer is not correct,
+the room remains locked and you can try again.</p>
+<p>While numeric answers are submitted as is, text answers should be
+submitted as character strings:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">submit</span>(<span class="st">&quot;negative&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">submit</span>(<span class="st">&quot;.qmd&quot;</span>)</span></code></pre></div>
+<p>For simple text locks, <code>escapeR</code> ignores leading and
+trailing spaces and is not case-sensitive. Numeric answers are checked
+with a small tolerance unless a room uses a custom checker.</p>
+</div>
+<div id="ask-for-a-hint" class="section level2">
+<h2>Ask for a hint</h2>
+<p>If you get stuck, call <code>hint()</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">hint</span>()</span></code></pre></div>
+<p>Some rooms have more than one hint. Repeated calls reveal the hints
+in order:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">hint</span>()</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">hint</span>()</span></code></pre></div>
+<p>Hints are meant to nudge you toward the R idea rather than simply
+giving away the answer. In a classroom, it is usually worth trying the
+task first, asking R what objects you have created, and then requesting
+a hint if the lock is still not opening.</p>
+</div>
+<div id="see-the-current-room-again" class="section level2">
+<h2>See the current room again</h2>
+<p>If the console has filled up with other work, call
+<code>play()</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">play</span>()</span></code></pre></div>
+<p><code>play()</code> does not restart the game. It simply prints the
+current room again, so you can reread the task and learning goal.</p>
+</div>
+<div id="check-your-status" class="section level2">
+<h2>Check your status</h2>
+<p>Use <code>status()</code> to see where you are:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">status</span>()</span></code></pre></div>
+<p>This tells you the active player, how many rooms have been solved out
+of those in the game, and which room is current. It is useful during
+longer activities or when returning to the game after a break.</p>
+</div>
+<div id="resume-later" class="section level2">
+<h2>Resume later</h2>
+<p>Progress is saved automatically for each player using
+<code>tools::R_user_dir(&quot;escapeR&quot;, &quot;data&quot;)</code>. To resume, load the
+package and call <code>escape()</code> again with the same player
+name:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">library</span>(escapeR)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">escape</span>(<span class="at">player =</span> <span class="st">&quot;ana&quot;</span>)</span></code></pre></div>
+<p>If saved progress exists for that player, the game resumes from the
+current room. If no saved progress exists, a new quest starts.</p>
+</div>
+<div id="restart-a-quest" class="section level2">
+<h2>Restart a quest</h2>
+<p>To restart the active player’s quest from the beginning, call:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">reset_game</span>()</span></code></pre></div>
+<p>You can also reset a named player:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">reset_game</span>(<span class="at">player =</span> <span class="st">&quot;ana&quot;</span>)</span></code></pre></div>
+<p>Or start again directly with <code>escape(reset = TRUE)</code>:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">escape</span>(<span class="at">player =</span> <span class="st">&quot;ana&quot;</span>, <span class="at">reset =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>Use resetting with care in class: it deliberately starts that
+player’s progress again from room 1, so all previous progress is
+lost.</p>
+</div>
+<div id="find-the-bundled-data-files" class="section level2">
+<h2>Find the bundled data files</h2>
+<p>Several rooms ask you to read or inspect files included with the
+package. Use <code>escapeR_file()</code> to find them. As an example, if
+a data file was called “dataX.csv” you would use</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">escapeR_file</span>(<span class="st">&quot;dataX.csv&quot;</span>)</span></code></pre></div>
+<p>For example, a room might ask you to read a CSV file and then inspect
+it. One option would then be</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">escapeR_file</span>(<span class="st">&quot;dataX.csv&quot;</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">head</span>(d)</span></code></pre></div>
+<p>The package also provides a separate, small survey data set.
+<code>survey_counts()</code> returns this data frame directly; it does
+not read or modify <code>dados1.csv</code>. Store the returned data
+frame in an object before working with it:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>survey <span class="ot">&lt;-</span> <span class="fu">survey_counts</span>()</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">names</span>(survey)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;site&quot;       &quot;habitat&quot;    &quot;count&quot;      &quot;distance_m&quot; &quot;detected&quot;</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="fu">head</span>(survey)</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt;   site habitat count distance_m detected</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; 1   S1  forest    12         15     TRUE</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; 2   S2  forest    15         40     TRUE</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; 3   S3  forest    11         70     TRUE</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt; 4   S4  forest    14         95    FALSE</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt; 5   S5   scrub     6         20     TRUE</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt; 6   S6   scrub     9         55     TRUE</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(survey))</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+<p>It has five named columns (<code>site</code>, <code>habitat</code>,
+<code>count</code>, <code>distance_m</code>, and <code>detected</code>).
+Two values in <code>count</code> are <code>NA</code>, included
+deliberately for the data quality exercise. By contrast,
+<code>dados1.csv</code> has four columns and no missing values. The
+survey data set appears in several rooms about data quality, summaries,
+modelling, and distance sampling.</p>
+</div>
+<div id="see-available-rooms" class="section level2">
+<h2>See available rooms</h2>
+<p>Use <code>list_rooms()</code> to inspect the bundled room
+sequence:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">list_rooms</span>()</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt;          room       id</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; console     1  console</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; vector      2   vector</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; finddata    3 finddata</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt; datatab     4  datatab</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt; columns     5  columns</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co">#&gt; missing     6  missing</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co">#&gt; plotwin     7  plotwin</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt; habitat     8  habitat</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt; hidden      9   hidden</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt; subset     10   subset</span></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt; sorting    11  sorting</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt; model      12    model</span></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt; resid      13    resid</span></span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a><span class="co">#&gt; predict    14  predict</span></span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a><span class="co">#&gt; detectp    15  detectp</span></span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a><span class="co">#&gt; detect     16   detect</span></span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a><span class="co">#&gt; trunc      17    trunc</span></span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a><span class="co">#&gt; comment    18  comment</span></span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a><span class="co">#&gt; webglm     19   webglm</span></span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="co">#&gt; quarto     20   quarto</span></span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="co">#&gt; en08       21     en08</span></span>
+<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a><span class="co">#&gt; en09       22     en09</span></span>
+<span id="cb16-25"><a href="#cb16-25" tabindex="-1"></a><span class="co">#&gt; posprop    23  posprop</span></span>
+<span id="cb16-26"><a href="#cb16-26" tabindex="-1"></a><span class="co">#&gt; en10       24     en10</span></span>
+<span id="cb16-27"><a href="#cb16-27" tabindex="-1"></a><span class="co">#&gt; en11       25     en11</span></span>
+<span id="cb16-28"><a href="#cb16-28" tabindex="-1"></a><span class="co">#&gt; en12       26     en12</span></span>
+<span id="cb16-29"><a href="#cb16-29" tabindex="-1"></a><span class="co">#&gt; en13       27     en13</span></span>
+<span id="cb16-30"><a href="#cb16-30" tabindex="-1"></a><span class="co">#&gt; bpmean     28   bpmean</span></span>
+<span id="cb16-31"><a href="#cb16-31" tabindex="-1"></a><span class="co">#&gt; en14       29     en14</span></span>
+<span id="cb16-32"><a href="#cb16-32" tabindex="-1"></a><span class="co">#&gt; en15       30     en15</span></span>
+<span id="cb16-33"><a href="#cb16-33" tabindex="-1"></a><span class="co">#&gt; en16       31     en16</span></span>
+<span id="cb16-34"><a href="#cb16-34" tabindex="-1"></a><span class="co">#&gt; en17       32     en17</span></span>
+<span id="cb16-35"><a href="#cb16-35" tabindex="-1"></a><span class="co">#&gt; en18       33     en18</span></span>
+<span id="cb16-36"><a href="#cb16-36" tabindex="-1"></a><span class="co">#&gt; en19       34     en19</span></span>
+<span id="cb16-37"><a href="#cb16-37" tabindex="-1"></a><span class="co">#&gt; riskcat    35  riskcat</span></span>
+<span id="cb16-38"><a href="#cb16-38" tabindex="-1"></a><span class="co">#&gt; en20       36     en20</span></span>
+<span id="cb16-39"><a href="#cb16-39" tabindex="-1"></a><span class="co">#&gt; en21       37     en21</span></span>
+<span id="cb16-40"><a href="#cb16-40" tabindex="-1"></a><span class="co">#&gt; en22       38     en22</span></span>
+<span id="cb16-41"><a href="#cb16-41" tabindex="-1"></a><span class="co">#&gt; en23       39     en23</span></span>
+<span id="cb16-42"><a href="#cb16-42" tabindex="-1"></a><span class="co">#&gt; en24       40     en24</span></span>
+<span id="cb16-43"><a href="#cb16-43" tabindex="-1"></a><span class="co">#&gt; en01       41     en01</span></span>
+<span id="cb16-44"><a href="#cb16-44" tabindex="-1"></a><span class="co">#&gt; en25       42     en25</span></span>
+<span id="cb16-45"><a href="#cb16-45" tabindex="-1"></a><span class="co">#&gt; en02       43     en02</span></span>
+<span id="cb16-46"><a href="#cb16-46" tabindex="-1"></a><span class="co">#&gt; en03       44     en03</span></span>
+<span id="cb16-47"><a href="#cb16-47" tabindex="-1"></a><span class="co">#&gt; en04       45     en04</span></span>
+<span id="cb16-48"><a href="#cb16-48" tabindex="-1"></a><span class="co">#&gt; en05       46     en05</span></span>
+<span id="cb16-49"><a href="#cb16-49" tabindex="-1"></a><span class="co">#&gt; en06       47     en06</span></span>
+<span id="cb16-50"><a href="#cb16-50" tabindex="-1"></a><span class="co">#&gt; en07       48     en07</span></span>
+<span id="cb16-51"><a href="#cb16-51" tabindex="-1"></a><span class="co">#&gt;                                                                                          module</span></span>
+<span id="cb16-52"><a href="#cb16-52" tabindex="-1"></a><span class="co">#&gt; console                                                                           R foundations</span></span>
+<span id="cb16-53"><a href="#cb16-53" tabindex="-1"></a><span class="co">#&gt; vector                                                                            R foundations</span></span>
+<span id="cb16-54"><a href="#cb16-54" tabindex="-1"></a><span class="co">#&gt; finddata                                                             Data import and inspection</span></span>
+<span id="cb16-55"><a href="#cb16-55" tabindex="-1"></a><span class="co">#&gt; datatab                                                              Data import and inspection</span></span>
+<span id="cb16-56"><a href="#cb16-56" tabindex="-1"></a><span class="co">#&gt; columns                                                              Data import and inspection</span></span>
+<span id="cb16-57"><a href="#cb16-57" tabindex="-1"></a><span class="co">#&gt; missing                                                              Data import and inspection</span></span>
+<span id="cb16-58"><a href="#cb16-58" tabindex="-1"></a><span class="co">#&gt; plotwin                                                                           Visualisation</span></span>
+<span id="cb16-59"><a href="#cb16-59" tabindex="-1"></a><span class="co">#&gt; habitat                                                                           Visualisation</span></span>
+<span id="cb16-60"><a href="#cb16-60" tabindex="-1"></a><span class="co">#&gt; hidden                                                                            Visualisation</span></span>
+<span id="cb16-61"><a href="#cb16-61" tabindex="-1"></a><span class="co">#&gt; subset                                                                        Data manipulation</span></span>
+<span id="cb16-62"><a href="#cb16-62" tabindex="-1"></a><span class="co">#&gt; sorting                                                                       Data manipulation</span></span>
+<span id="cb16-63"><a href="#cb16-63" tabindex="-1"></a><span class="co">#&gt; model                                                                      Ecological modelling</span></span>
+<span id="cb16-64"><a href="#cb16-64" tabindex="-1"></a><span class="co">#&gt; resid                                                                      Ecological modelling</span></span>
+<span id="cb16-65"><a href="#cb16-65" tabindex="-1"></a><span class="co">#&gt; predict                                                                    Ecological modelling</span></span>
+<span id="cb16-66"><a href="#cb16-66" tabindex="-1"></a><span class="co">#&gt; detectp                                                                       Distance sampling</span></span>
+<span id="cb16-67"><a href="#cb16-67" tabindex="-1"></a><span class="co">#&gt; detect                                                                        Distance sampling</span></span>
+<span id="cb16-68"><a href="#cb16-68" tabindex="-1"></a><span class="co">#&gt; trunc                                                                         Distance sampling</span></span>
+<span id="cb16-69"><a href="#cb16-69" tabindex="-1"></a><span class="co">#&gt; comment                                                                   Reproducible workflow</span></span>
+<span id="cb16-70"><a href="#cb16-70" tabindex="-1"></a><span class="co">#&gt; webglm                                                                    Reproducible workflow</span></span>
+<span id="cb16-71"><a href="#cb16-71" tabindex="-1"></a><span class="co">#&gt; quarto                                                                    Reproducible workflow</span></span>
+<span id="cb16-72"><a href="#cb16-72" tabindex="-1"></a><span class="co">#&gt; en08           Ecologia Num&lt;U+00E9&gt;rica - Lecture 08: Experimental design and pseudoreplication</span></span>
+<span id="cb16-73"><a href="#cb16-73" tabindex="-1"></a><span class="co">#&gt; en09            Ecologia Num&lt;U+00E9&gt;rica - Lecture 09: Exploratory graphics and transformations</span></span>
+<span id="cb16-74"><a href="#cb16-74" tabindex="-1"></a><span class="co">#&gt; posprop                                                                                Medicine</span></span>
+<span id="cb16-75"><a href="#cb16-75" tabindex="-1"></a><span class="co">#&gt; en10                     Ecologia Num&lt;U+00E9&gt;rica - Lecture 10: Hypothesis testing and p-values</span></span>
+<span id="cb16-76"><a href="#cb16-76" tabindex="-1"></a><span class="co">#&gt; en11               Ecologia Num&lt;U+00E9&gt;rica - Lecture 11: Assumptions and the one-sample t-test</span></span>
+<span id="cb16-77"><a href="#cb16-77" tabindex="-1"></a><span class="co">#&gt; en12             Ecologia Num&lt;U+00E9&gt;rica - Lecture 12: One- and two-sample tests: signed ranks</span></span>
+<span id="cb16-78"><a href="#cb16-78" tabindex="-1"></a><span class="co">#&gt; en13                      Ecologia Num&lt;U+00E9&gt;rica - Lecture 13: Paired tests and one-way ANOVA</span></span>
+<span id="cb16-79"><a href="#cb16-79" tabindex="-1"></a><span class="co">#&gt; bpmean                                                                                 Medicine</span></span>
+<span id="cb16-80"><a href="#cb16-80" tabindex="-1"></a><span class="co">#&gt; en14            Ecologia Num&lt;U+00E9&gt;rica - Lecture 14: Multiple comparisons and factorial ANOVA</span></span>
+<span id="cb16-81"><a href="#cb16-81" tabindex="-1"></a><span class="co">#&gt; en15       Ecologia Num&lt;U+00E9&gt;rica - Lecture 15: Blocks, repeated measures, and nested designs</span></span>
+<span id="cb16-82"><a href="#cb16-82" tabindex="-1"></a><span class="co">#&gt; en16               Ecologia Num&lt;U+00E9&gt;rica - Lecture 16: Simple and multiple linear regression</span></span>
+<span id="cb16-83"><a href="#cb16-83" tabindex="-1"></a><span class="co">#&gt; en17         Ecologia Num&lt;U+00E9&gt;rica - Lecture 17: Factors in regression and model diagnostics</span></span>
+<span id="cb16-84"><a href="#cb16-84" tabindex="-1"></a><span class="co">#&gt; en18                    Ecologia Num&lt;U+00E9&gt;rica - Lecture 18: GLMs, links, and model selection</span></span>
+<span id="cb16-85"><a href="#cb16-85" tabindex="-1"></a><span class="co">#&gt; en19                         Ecologia Num&lt;U+00E9&gt;rica - Lecture 19: Generalized additive models</span></span>
+<span id="cb16-86"><a href="#cb16-86" tabindex="-1"></a><span class="co">#&gt; riskcat                                                                                Medicine</span></span>
+<span id="cb16-87"><a href="#cb16-87" tabindex="-1"></a><span class="co">#&gt; en20                  Ecologia Num&lt;U+00E9&gt;rica - Lecture 20: Correlation and contingency tables</span></span>
+<span id="cb16-88"><a href="#cb16-88" tabindex="-1"></a><span class="co">#&gt; en21            Ecologia Num&lt;U+00E9&gt;rica - Lecture 21: Log-linear models and maximum likelihood</span></span>
+<span id="cb16-89"><a href="#cb16-89" tabindex="-1"></a><span class="co">#&gt; en22                Ecologia Num&lt;U+00E9&gt;rica - Lecture 22: Multivariate data and classification</span></span>
+<span id="cb16-90"><a href="#cb16-90" tabindex="-1"></a><span class="co">#&gt; en23               Ecologia Num&lt;U+00E9&gt;rica - Lecture 23: Distances and hierarchical clustering</span></span>
+<span id="cb16-91"><a href="#cb16-91" tabindex="-1"></a><span class="co">#&gt; en24          Ecologia Num&lt;U+00E9&gt;rica - Lecture 24: Non-hierarchical clustering and ordination</span></span>
+<span id="cb16-92"><a href="#cb16-92" tabindex="-1"></a><span class="co">#&gt; en01                                                        Ecologia Num&lt;U+00E9&gt;rica - Class 01</span></span>
+<span id="cb16-93"><a href="#cb16-93" tabindex="-1"></a><span class="co">#&gt; en25                    Ecologia Num&lt;U+00E9&gt;rica - Lecture 25: PCA and other ordination methods</span></span>
+<span id="cb16-94"><a href="#cb16-94" tabindex="-1"></a><span class="co">#&gt; en02           Ecologia Num&lt;U+00E9&gt;rica - Lecture 02: Critical thinking and observation filters</span></span>
+<span id="cb16-95"><a href="#cb16-95" tabindex="-1"></a><span class="co">#&gt; en03     Ecologia Num&lt;U+00E9&gt;rica - Lecture 03: Scientific questions and falsifiable hypotheses</span></span>
+<span id="cb16-96"><a href="#cb16-96" tabindex="-1"></a><span class="co">#&gt; en04                Ecologia Num&lt;U+00E9&gt;rica - Lecture 04: Variable types and probability rules</span></span>
+<span id="cb16-97"><a href="#cb16-97" tabindex="-1"></a><span class="co">#&gt; en05                  Ecologia Num&lt;U+00E9&gt;rica - Lecture 05: Random variables and distributions</span></span>
+<span id="cb16-98"><a href="#cb16-98" tabindex="-1"></a><span class="co">#&gt; en06                         Ecologia Num&lt;U+00E9&gt;rica - Lecture 06: Distribution functions in R</span></span>
+<span id="cb16-99"><a href="#cb16-99" tabindex="-1"></a><span class="co">#&gt; en07                         Ecologia Num&lt;U+00E9&gt;rica - Lecture 07: Sampling and stratification</span></span>
+<span id="cb16-100"><a href="#cb16-100" tabindex="-1"></a><span class="co">#&gt;                                 title</span></span>
+<span id="cb16-101"><a href="#cb16-101" tabindex="-1"></a><span class="co">#&gt; console              The Console Door</span></span>
+<span id="cb16-102"><a href="#cb16-102" tabindex="-1"></a><span class="co">#&gt; vector             The Vector Cabinet</span></span>
+<span id="cb16-103"><a href="#cb16-103" tabindex="-1"></a><span class="co">#&gt; finddata                 Finding Data</span></span>
+<span id="cb16-104"><a href="#cb16-104" tabindex="-1"></a><span class="co">#&gt; datatab          The Data Table Hatch</span></span>
+<span id="cb16-105"><a href="#cb16-105" tabindex="-1"></a><span class="co">#&gt; columns            The Column Scanner</span></span>
+<span id="cb16-106"><a href="#cb16-106" tabindex="-1"></a><span class="co">#&gt; missing      The Missing Value Mirror</span></span>
+<span id="cb16-107"><a href="#cb16-107" tabindex="-1"></a><span class="co">#&gt; plotwin           The Plotting Window</span></span>
+<span id="cb16-108"><a href="#cb16-108" tabindex="-1"></a><span class="co">#&gt; habitat            The Habitat Mosaic</span></span>
+<span id="cb16-109"><a href="#cb16-109" tabindex="-1"></a><span class="co">#&gt; hidden                The Hidden Data</span></span>
+<span id="cb16-110"><a href="#cb16-110" tabindex="-1"></a><span class="co">#&gt; subset            The Subsetting Lock</span></span>
+<span id="cb16-111"><a href="#cb16-111" tabindex="-1"></a><span class="co">#&gt; sorting         The Sorting Staircase</span></span>
+<span id="cb16-112"><a href="#cb16-112" tabindex="-1"></a><span class="co">#&gt; model                  The Model Room</span></span>
+<span id="cb16-113"><a href="#cb16-113" tabindex="-1"></a><span class="co">#&gt; resid             The Residual Drawer</span></span>
+<span id="cb16-114"><a href="#cb16-114" tabindex="-1"></a><span class="co">#&gt; predict        The Prediction Lantern</span></span>
+<span id="cb16-115"><a href="#cb16-115" tabindex="-1"></a><span class="co">#&gt; detectp        The Observation Filter</span></span>
+<span id="cb16-116"><a href="#cb16-116" tabindex="-1"></a><span class="co">#&gt; detect          The Detection Counter</span></span>
+<span id="cb16-117"><a href="#cb16-117" tabindex="-1"></a><span class="co">#&gt; trunc             The Truncation Gate</span></span>
+<span id="cb16-118"><a href="#cb16-118" tabindex="-1"></a><span class="co">#&gt; comment            The Comment Cipher</span></span>
+<span id="cb16-119"><a href="#cb16-119" tabindex="-1"></a><span class="co">#&gt; webglm             The Web Data Model</span></span>
+<span id="cb16-120"><a href="#cb16-120" tabindex="-1"></a><span class="co">#&gt; quarto                The Quarto Exit</span></span>
+<span id="cb16-121"><a href="#cb16-121" tabindex="-1"></a><span class="co">#&gt; en08            The Aquarium Illusion</span></span>
+<span id="cb16-122"><a href="#cb16-122" tabindex="-1"></a><span class="co">#&gt; en09       The Standardisation Mirror</span></span>
+<span id="cb16-123"><a href="#cb16-123" tabindex="-1"></a><span class="co">#&gt; posprop         The Test Result Board</span></span>
+<span id="cb16-124"><a href="#cb16-124" tabindex="-1"></a><span class="co">#&gt; en10               The Sign Test Lock</span></span>
+<span id="cb16-125"><a href="#cb16-125" tabindex="-1"></a><span class="co">#&gt; en11     The Reference Growth Chamber</span></span>
+<span id="cb16-126"><a href="#cb16-126" tabindex="-1"></a><span class="co">#&gt; en12                The Ranked Shells</span></span>
+<span id="cb16-127"><a href="#cb16-127" tabindex="-1"></a><span class="co">#&gt; en13                The Three Meadows</span></span>
+<span id="cb16-128"><a href="#cb16-128" tabindex="-1"></a><span class="co">#&gt; bpmean              The Clinic Intake</span></span>
+<span id="cb16-129"><a href="#cb16-129" tabindex="-1"></a><span class="co">#&gt; en14             The Interaction Trap</span></span>
+<span id="cb16-130"><a href="#cb16-130" tabindex="-1"></a><span class="co">#&gt; en15           The Blocked Greenhouse</span></span>
+<span id="cb16-131"><a href="#cb16-131" tabindex="-1"></a><span class="co">#&gt; en16         The Regression Staircase</span></span>
+<span id="cb16-132"><a href="#cb16-132" tabindex="-1"></a><span class="co">#&gt; en17              The Residual Window</span></span>
+<span id="cb16-133"><a href="#cb16-133" tabindex="-1"></a><span class="co">#&gt; en18                The Logistic Gate</span></span>
+<span id="cb16-134"><a href="#cb16-134" tabindex="-1"></a><span class="co">#&gt; en19                The Curved Forest</span></span>
+<span id="cb16-135"><a href="#cb16-135" tabindex="-1"></a><span class="co">#&gt; riskcat                The Risk Label</span></span>
+<span id="cb16-136"><a href="#cb16-136" tabindex="-1"></a><span class="co">#&gt; en20           The Independence Table</span></span>
+<span id="cb16-137"><a href="#cb16-137" tabindex="-1"></a><span class="co">#&gt; en21              The Likelihood Nest</span></span>
+<span id="cb16-138"><a href="#cb16-138" tabindex="-1"></a><span class="co">#&gt; en22             The Community Matrix</span></span>
+<span id="cb16-139"><a href="#cb16-139" tabindex="-1"></a><span class="co">#&gt; en23          The Shared Species Lock</span></span>
+<span id="cb16-140"><a href="#cb16-140" tabindex="-1"></a><span class="co">#&gt; en24                   The Two Shoals</span></span>
+<span id="cb16-141"><a href="#cb16-141" tabindex="-1"></a><span class="co">#&gt; en01        The First Practical Class</span></span>
+<span id="cb16-142"><a href="#cb16-142" tabindex="-1"></a><span class="co">#&gt; en25         The Final Principal Door</span></span>
+<span id="cb16-143"><a href="#cb16-143" tabindex="-1"></a><span class="co">#&gt; en02              The Invisible Birds</span></span>
+<span id="cb16-144"><a href="#cb16-144" tabindex="-1"></a><span class="co">#&gt; en03             The River Hypothesis</span></span>
+<span id="cb16-145"><a href="#cb16-145" tabindex="-1"></a><span class="co">#&gt; en04            The Two Habitat Gates</span></span>
+<span id="cb16-146"><a href="#cb16-146" tabindex="-1"></a><span class="co">#&gt; en05                 The Nest Lottery</span></span>
+<span id="cb16-147"><a href="#cb16-147" tabindex="-1"></a><span class="co">#&gt; en06            The Temperature Vault</span></span>
+<span id="cb16-148"><a href="#cb16-148" tabindex="-1"></a><span class="co">#&gt; en07             The Unequal Habitats</span></span>
+<span id="cb16-149"><a href="#cb16-149" tabindex="-1"></a><span class="co">#&gt;                                                                                         learning_goal</span></span>
+<span id="cb16-150"><a href="#cb16-150" tabindex="-1"></a><span class="co">#&gt; console                                             Use R as a calculator and learn expression order.</span></span>
+<span id="cb16-151"><a href="#cb16-151" tabindex="-1"></a><span class="co">#&gt; vector                                              Create vectors and summarize them with functions.</span></span>
+<span id="cb16-152"><a href="#cb16-152" tabindex="-1"></a><span class="co">#&gt; finddata                                                        Find and inspect built-in R datasets.</span></span>
+<span id="cb16-153"><a href="#cb16-153" tabindex="-1"></a><span class="co">#&gt; datatab                                                              Read and inspect a CSV data set.</span></span>
+<span id="cb16-154"><a href="#cb16-154" tabindex="-1"></a><span class="co">#&gt; columns                                                           Identify variables in a data frame.</span></span>
+<span id="cb16-155"><a href="#cb16-155" tabindex="-1"></a><span class="co">#&gt; missing                                                           Check data quality before analysis.</span></span>
+<span id="cb16-156"><a href="#cb16-156" tabindex="-1"></a><span class="co">#&gt; plotwin                                                  Make a basic plot and read a visual pattern.</span></span>
+<span id="cb16-157"><a href="#cb16-157" tabindex="-1"></a><span class="co">#&gt; habitat                                Use tables to summarize categorical variables before plotting.</span></span>
+<span id="cb16-158"><a href="#cb16-158" tabindex="-1"></a><span class="co">#&gt; hidden                          Discover that plotted data can reveal structure hidden in plain text.</span></span>
+<span id="cb16-159"><a href="#cb16-159" tabindex="-1"></a><span class="co">#&gt; subset                                                   Subset data frames using logical conditions.</span></span>
+<span id="cb16-160"><a href="#cb16-160" tabindex="-1"></a><span class="co">#&gt; sorting                                                  Order data and inspect extreme observations.</span></span>
+<span id="cb16-161"><a href="#cb16-161" tabindex="-1"></a><span class="co">#&gt; model                                                        Fit and interpret a simple linear model.</span></span>
+<span id="cb16-162"><a href="#cb16-162" tabindex="-1"></a><span class="co">#&gt; resid                                         Understand that fitted models leave residual variation.</span></span>
+<span id="cb16-163"><a href="#cb16-163" tabindex="-1"></a><span class="co">#&gt; predict                                   Use a fitted model to predict for a new ecological setting.</span></span>
+<span id="cb16-164"><a href="#cb16-164" tabindex="-1"></a><span class="co">#&gt; detectp                                    Connect observed data to an imperfect observation process.</span></span>
+<span id="cb16-165"><a href="#cb16-165" tabindex="-1"></a><span class="co">#&gt; detect                                                     Summarize detections as observed outcomes.</span></span>
+<span id="cb16-166"><a href="#cb16-166" tabindex="-1"></a><span class="co">#&gt; trunc                                         Think about distance cutoffs and retained observations.</span></span>
+<span id="cb16-167"><a href="#cb16-167" tabindex="-1"></a><span class="co">#&gt; comment                                                Recognize comments as part of readable R code.</span></span>
+<span id="cb16-168"><a href="#cb16-168" tabindex="-1"></a><span class="co">#&gt; webglm                                               Read data from a web link and fit a Poisson GLM.</span></span>
+<span id="cb16-169"><a href="#cb16-169" tabindex="-1"></a><span class="co">#&gt; quarto                               Recognize reproducible reports as part of the analysis workflow.</span></span>
+<span id="cb16-170"><a href="#cb16-170" tabindex="-1"></a><span class="co">#&gt; en08               Identify experimental units and avoid counting subsamples as treatment replicates.</span></span>
+<span id="cb16-171"><a href="#cb16-171" tabindex="-1"></a><span class="co">#&gt; en09                               Centre and scale measurements using the sample standard deviation.</span></span>
+<span id="cb16-172"><a href="#cb16-172" tabindex="-1"></a><span class="co">#&gt; posprop                                                           Calculate a proportion from counts.</span></span>
+<span id="cb16-173"><a href="#cb16-173" tabindex="-1"></a><span class="co">#&gt; en10                    Calculate an exact two-sided binomial p-value under a stated null hypothesis.</span></span>
+<span id="cb16-174"><a href="#cb16-174" tabindex="-1"></a><span class="co">#&gt; en11       Compute a one-sample t statistic while recognizing independence and Normality assumptions.</span></span>
+<span id="cb16-175"><a href="#cb16-175" tabindex="-1"></a><span class="co">#&gt; en12                       Calculate the positive-rank sum in a one-sample Wilcoxon signed-rank test.</span></span>
+<span id="cb16-176"><a href="#cb16-176" tabindex="-1"></a><span class="co">#&gt; en13                                   Fit a one-way ANOVA and extract the between-group F statistic.</span></span>
+<span id="cb16-177"><a href="#cb16-177" tabindex="-1"></a><span class="co">#&gt; bpmean                                                Create a numeric vector and calculate its mean.</span></span>
+<span id="cb16-178"><a href="#cb16-178" tabindex="-1"></a><span class="co">#&gt; en14                     Recognize a factorial interaction through a difference of treatment effects.</span></span>
+<span id="cb16-179"><a href="#cb16-179" tabindex="-1"></a><span class="co">#&gt; en15                           Account for matched blocks by analysing differences within each block.</span></span>
+<span id="cb16-180"><a href="#cb16-180" tabindex="-1"></a><span class="co">#&gt; en16                             Fit a linear regression and interpret its slope in ecological units.</span></span>
+<span id="cb16-181"><a href="#cb16-181" tabindex="-1"></a><span class="co">#&gt; en17              Calculate residuals from a fitted model and identify the largest absolute residual.</span></span>
+<span id="cb16-182"><a href="#cb16-182" tabindex="-1"></a><span class="co">#&gt; en18              Transform a binomial GLM linear predictor into a probability on the response scale.</span></span>
+<span id="cb16-183"><a href="#cb16-183" tabindex="-1"></a><span class="co">#&gt; en19                                     Recognize when a smooth ecological response calls for a GAM.</span></span>
+<span id="cb16-184"><a href="#cb16-184" tabindex="-1"></a><span class="co">#&gt; riskcat                                                 Use a logical comparison to classify a value.</span></span>
+<span id="cb16-185"><a href="#cb16-185" tabindex="-1"></a><span class="co">#&gt; en20                                  Compute an expected contingency-table count under independence.</span></span>
+<span id="cb16-186"><a href="#cb16-186" tabindex="-1"></a><span class="co">#&gt; en21                                Find a Bernoulli maximum-likelihood estimate using a grid search.</span></span>
+<span id="cb16-187"><a href="#cb16-187" tabindex="-1"></a><span class="co">#&gt; en22                      Organize sites as rows and species as columns, then summarize each species.</span></span>
+<span id="cb16-188"><a href="#cb16-188" tabindex="-1"></a><span class="co">#&gt; en23        Calculate Jaccard dissimilarity for presence-absence data while excluding joint absences.</span></span>
+<span id="cb16-189"><a href="#cb16-189" tabindex="-1"></a><span class="co">#&gt; en24     Run k-means with explicit initial centres and interpret a centre independently of its label.</span></span>
+<span id="cb16-190"><a href="#cb16-190" tabindex="-1"></a><span class="co">#&gt; en01                    Use R arithmetic, square roots, and unit conversion to calculate travel time.</span></span>
+<span id="cb16-191"><a href="#cb16-191" tabindex="-1"></a><span class="co">#&gt; en25             Fit a PCA and calculate the proportion of variance explained by its first component.</span></span>
+<span id="cb16-192"><a href="#cb16-192" tabindex="-1"></a><span class="co">#&gt; en02                          Distinguish observed counts from abundance when detection is imperfect.</span></span>
+<span id="cb16-193"><a href="#cb16-193" tabindex="-1"></a><span class="co">#&gt; en03                       Translate a falsifiable ecological hypothesis into a numerical prediction.</span></span>
+<span id="cb16-194"><a href="#cb16-194" tabindex="-1"></a><span class="co">#&gt; en04                    Calculate the probability of a union without double-counting an intersection.</span></span>
+<span id="cb16-195"><a href="#cb16-195" tabindex="-1"></a><span class="co">#&gt; en05                                  Calculate a binomial probability and recognize its assumptions.</span></span>
+<span id="cb16-196"><a href="#cb16-196" tabindex="-1"></a><span class="co">#&gt; en06                   Use a cumulative distribution function to calculate an upper-tail probability.</span></span>
+<span id="cb16-197"><a href="#cb16-197" tabindex="-1"></a><span class="co">#&gt; en07                                                 Weight stratum means by the sizes of the strata.</span></span></code></pre></div>
+<p>The <code>id</code> column is useful when building a shorter custom
+quest, where you can provide a list of rooms to be played as a separate
+quest. See next section and the corresponding dedicated vignette for
+details on how to create new rooms and quests.</p>
+</div>
+<div id="play-a-shorter-or-custom-quest" class="section level2">
+<h2>Play a shorter or custom quest</h2>
+<p>Instructors can build a quest from selected room IDs, as an example
+here, a mini 3-room quest:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>short_quest <span class="ot">&lt;-</span> <span class="fu">build_escape</span>(<span class="fu">c</span>(<span class="st">&quot;console&quot;</span>, <span class="st">&quot;vector&quot;</span>, <span class="st">&quot;plotwin&quot;</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">escape</span>(<span class="at">player =</span> <span class="st">&quot;demo_short&quot;</span>, <span class="at">reset =</span> <span class="cn">TRUE</span>, <span class="at">escape =</span> short_quest)</span></code></pre></div>
+<p>The same <code>escape()</code> command starts the custom sequence.
+The only difference is that the <code>escape</code> argument receives an
+escape sequence created with <code>build_escape()</code>.</p>
+<p>If room packs have been registered, <code>list_escapes()</code> shows
+named sequences:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">list_escapes</span>()</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co">#&gt;              id pack_id</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co">#&gt; en2026   en2026  enpack</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt; medmini medmini medpack</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co">#&gt; medfull medfull medpack</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co">#&gt; enintro enintro  enpack</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="co">#&gt;                                                                                                                                                        rooms</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co">#&gt; en2026  en01, en02, en03, en04, en05, en06, en07, en08, en09, en10, en11, en12, en13, en14, en15, en16, en17, en18, en19, en20, en21, en22, en23, en24, en25</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co">#&gt; medmini                                                                                                                                      bpmean, riskcat</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="co">#&gt; medfull                                                                                                                             bpmean, riskcat, posprop</span></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="co">#&gt; enintro                                                                                                                                                 en01</span></span></code></pre></div>
+<p>Those named sequences can also be passed to
+<code>build_escape()</code>.</p>
+</div>
+<div id="useful-commands" class="section level2">
+<h2>Useful commands</h2>
+<p>Here is the core command set while playing:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">escape</span>()       <span class="co"># start or resume a quest</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="fu">play</span>()         <span class="co"># show the current room again</span></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="fu">hint</span>()         <span class="co"># request the next hint</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="fu">submit</span>(<span class="dv">70</span>)     <span class="co"># submit an answer</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="fu">status</span>()       <span class="co"># check progress</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="fu">reset_game</span>()   <span class="co"># restart the active quest</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="fu">list_rooms</span>()   <span class="co"># inspect available rooms</span></span></code></pre></div>
+<p>The most important habit is to solve the room in ordinary R first.
+The game is the lock; R is the key. Can you get out?</p>
+</div>
+<div id="managing-saved-profiles" class="section level2">
+<h2>Managing saved profiles</h2>
+<p>Remove a saved profile with <code>delete_progress(&quot;ana&quot;)</code> when
+it is no longer needed. <code>delete_progress()</code> removes the
+active profile and closes that game. Set
+<code>options(escapeR.progress_dir = &quot;path&quot;)</code> to select a
+different directory. For demonstrations, use temporary storage and clean
+it up afterwards. Profiles are case-insensitive; punctuation is replaced
+by underscores in filenames. Names that map to another player’s saved
+file are rejected. An unreadable save can be removed or deliberately
+restarted with <code>escape(player, reset = TRUE)</code>.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
